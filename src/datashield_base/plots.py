@@ -2,16 +2,14 @@ import logging
 import random
 import io
 import base64
+import matplotlib.pyplot as plt
 
 from pathlib import Path
 from datashield import DSSession
 
-import matplotlib
+plt.switch_backend("Agg")
 
 logger = logging.getLogger(__name__)
-
-matplotlib.use("Agg")  # must be before importing pyplot
-import matplotlib.pyplot as plt
 
 
 class PlotsClient:
@@ -22,7 +20,7 @@ class PlotsClient:
     base64-encoded image data that can be displayed in the client application.
     """
 
-    def __init__(self, dssession: DSSession ):
+    def __init__(self, dssession: DSSession):
         """
         Service for performing plotting operations on DataSHIELD sessions.
 
@@ -31,9 +29,7 @@ class PlotsClient:
         """
         self.dssession = dssession
 
-    def get_histogram(
-        self, symbol: str, num_breaks: int = 20, k: int = 3, noise: float = 0.25
-    ) -> str:
+    def get_histogram(self, symbol: str, num_breaks: int = 20, k: int = 3, noise: float = 0.25) -> str:
         """
         Get the histogram of a symbol in the remote R sessions for a given DataSHIELD session.
 

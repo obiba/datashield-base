@@ -7,6 +7,7 @@ from datashield import DSSession
 
 logger = logging.getLogger(__name__)
 
+
 class ModelsClient:
     """Service for performing modeling operations on DataSHIELD sessions.
 

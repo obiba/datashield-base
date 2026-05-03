@@ -1,5 +1,3 @@
-import uuid
-
 from datashield import DSLoginBuilder, DSSession, DSError
 import pytest
 from datashield_base import StatsClient
@@ -16,7 +14,6 @@ class TestClass:
         session.open()
         session.assign_table("df", tables={"server1": "CNSIM.CNSIM1"})
         print(session.has_errors())
-        session_id = str(uuid.uuid4())
         cls.dssession = session
 
     @classmethod

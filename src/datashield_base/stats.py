@@ -5,6 +5,7 @@ from datashield import DSSession
 
 logger = logging.getLogger(__name__)
 
+
 class StatsClient:
     """Service for performing statistical operations on DataSHIELD sessions.
 
