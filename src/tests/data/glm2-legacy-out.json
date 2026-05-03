@@ -1,0 +1,609 @@
+{
+  "server1": {
+    "type": "list",
+    "attributes": {
+      "names": {
+        "type": "character",
+        "attributes": {},
+        "value": [
+          "family",
+          "info.matrix",
+          "score.vect",
+          "numsubs",
+          "dev",
+          "Nvalid",
+          "Nmissing",
+          "Ntotal",
+          "disclosure.risk",
+          "errorMessage2"
+        ]
+      }
+    },
+    "value": [
+      {
+        "type": "list",
+        "attributes": {
+          "names": {
+            "type": "character",
+            "attributes": {},
+            "value": [
+              "family",
+              "link",
+              "linkfun",
+              "linkinv",
+              "variance",
+              "dev.resids",
+              "aic",
+              "mu.eta",
+              "initialize",
+              "validmu",
+              "valideta",
+              "simulate",
+              "dispersion"
+            ]
+          },
+          "class": {
+            "type": "character",
+            "attributes": {},
+            "value": [
+              "family"
+            ]
+          }
+        },
+        "value": [
+          {
+            "type": "character",
+            "attributes": {},
+            "value": [
+              "binomial"
+            ]
+          },
+          {
+            "type": "character",
+            "attributes": {},
+            "value": [
+              "logit"
+            ]
+          },
+          {
+            "type": "closure",
+            "attributes": {
+              "names": {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "mu",
+                  ""
+                ]
+              }
+            },
+            "value": [
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "language",
+                "attributes": {},
+                "value": [
+                  ".Call(C_logit_link, mu)"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "closure",
+            "attributes": {
+              "names": {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "eta",
+                  ""
+                ]
+              }
+            },
+            "value": [
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "language",
+                "attributes": {},
+                "value": [
+                  ".Call(C_logit_linkinv, eta)"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "closure",
+            "attributes": {
+              "names": {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "mu",
+                  ""
+                ]
+              }
+            },
+            "value": [
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "language",
+                "attributes": {},
+                "value": [
+                  "mu * (1 - mu)"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "closure",
+            "attributes": {
+              "names": {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "y",
+                  "mu",
+                  "wt",
+                  ""
+                ]
+              }
+            },
+            "value": [
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "language",
+                "attributes": {},
+                "value": [
+                  ".Call(C_binomial_dev_resids, y, mu, wt)"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "closure",
+            "attributes": {
+              "names": {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "y",
+                  "n",
+                  "mu",
+                  "wt",
+                  "dev",
+                  ""
+                ]
+              }
+            },
+            "value": [
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "language",
+                "attributes": {},
+                "value": [
+                  "{",
+                  "    m <- if (any(n > 1)) ",
+                  "        n",
+                  "    else wt",
+                  "    -2 * sum(ifelse(m > 0, (wt/m), 0) * dbinom(round(m * y), ",
+                  "        round(m), mu, log = TRUE))",
+                  "}"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "closure",
+            "attributes": {
+              "names": {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "eta",
+                  ""
+                ]
+              }
+            },
+            "value": [
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "language",
+                "attributes": {},
+                "value": [
+                  ".Call(C_logit_mu_eta, eta)"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "language",
+            "attributes": {},
+            "value": [
+              "{",
+              "    if (NCOL(y) == 1) {",
+              "        if (is.factor(y)) ",
+              "            y <- y != levels(y)[1L]",
+              "        n <- rep.int(1, nobs)",
+              "        y[weights == 0] <- 0",
+              "        if (any(y < 0 | y > 1)) ",
+              "            stop(\"y values must be 0 <= y <= 1\")",
+              "        mustart <- (weights * y + 0.5)/(weights + 1)",
+              "        m <- weights * y",
+              "        if (\"binomial\" == \"binomial\" && any(abs(m - round(m)) > ",
+              "            0.001)) ",
+              "            warning(gettextf(\"non-integer #successes in a %s glm!\", ",
+              "                \"binomial\"), domain = NA)",
+              "    }",
+              "    else if (NCOL(y) == 2) {",
+              "        if (\"binomial\" == \"binomial\" && any(abs(y - round(y)) > ",
+              "            0.001)) ",
+              "            warning(gettextf(\"non-integer counts in a %s glm!\", ",
+              "                \"binomial\"), domain = NA)",
+              "        n <- (y1 <- y[, 1L]) + y[, 2L]",
+              "        y <- y1/n",
+              "        if (any(n0 <- n == 0)) ",
+              "            y[n0] <- 0",
+              "        weights <- weights * n",
+              "        mustart <- (n * y + 0.5)/(n + 1)",
+              "    }",
+              "    else stop(gettextf(\"for the '%s' family, y must be a vector of 0 and 1's\\nor a 2 column matrix where col 1 is no. successes and col 2 is no. failures\", ",
+              "        \"binomial\"), domain = NA)",
+              "}"
+            ]
+          },
+          {
+            "type": "closure",
+            "attributes": {
+              "names": {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "mu",
+                  ""
+                ]
+              }
+            },
+            "value": [
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "language",
+                "attributes": {},
+                "value": [
+                  "all(is.finite(mu)) && all(mu > 0 & mu < 1)"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "closure",
+            "attributes": {
+              "names": {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "eta",
+                  ""
+                ]
+              }
+            },
+            "value": [
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "logical",
+                "attributes": {},
+                "value": [
+                  true
+                ]
+              }
+            ]
+          },
+          {
+            "type": "closure",
+            "attributes": {
+              "names": {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "object",
+                  "nsim",
+                  ""
+                ]
+              }
+            },
+            "value": [
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "symbol",
+                "attributes": {},
+                "value": [
+                  ""
+                ]
+              },
+              {
+                "type": "language",
+                "attributes": {},
+                "value": [
+                  "{",
+                  "    ftd <- fitted(object)",
+                  "    n <- length(ftd)",
+                  "    ntot <- n * nsim",
+                  "    wts <- object$prior.weights",
+                  "    if (any(wts%%1 != 0)) ",
+                  "        stop(\"cannot simulate from non-integer prior.weights\")",
+                  "    if (!is.null(m <- object$model)) {",
+                  "        y <- model.response(m)",
+                  "        if (is.factor(y)) {",
+                  "            yy <- factor(1 + rbinom(ntot, size = 1, prob = ftd), ",
+                  "                labels = levels(y))",
+                  "            split(yy, rep(seq_len(nsim), each = n))",
+                  "        }",
+                  "        else if (is.matrix(y) && ncol(y) == 2) {",
+                  "            yy <- vector(\"list\", nsim)",
+                  "            for (i in seq_len(nsim)) {",
+                  "                Y <- rbinom(n, size = wts, prob = ftd)",
+                  "                YY <- cbind(Y, wts - Y)",
+                  "                colnames(YY) <- colnames(y)",
+                  "                yy[[i]] <- YY",
+                  "            }",
+                  "            yy",
+                  "        }",
+                  "        else rbinom(ntot, size = wts, prob = ftd)/wts",
+                  "    }",
+                  "    else rbinom(ntot, size = wts, prob = ftd)/wts",
+                  "}"
+                ]
+              }
+            ]
+          },
+          {
+            "type": "double",
+            "attributes": {},
+            "value": [
+              1
+            ]
+          }
+        ]
+      },
+      {
+        "type": "double",
+        "attributes": {
+          "dim": {
+            "type": "integer",
+            "attributes": {},
+            "value": [
+              4,
+              4
+            ]
+          },
+          "dimnames": {
+            "type": "list",
+            "attributes": {},
+            "value": [
+              {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "(Intercept)",
+                  "GENDER1",
+                  "PM_BMI_CONTINUOUS",
+                  "LAB_HDL"
+                ]
+              },
+              {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "(Intercept)",
+                  "GENDER1",
+                  "PM_BMI_CONTINUOUS",
+                  "LAB_HDL"
+                ]
+              }
+            ]
+          }
+        },
+        "value": [
+          433,
+          216.5,
+          11854.745,
+          680.87462925,
+          216.5,
+          216.5,
+          5813.9525,
+          351.703075,
+          11854.745,
+          5813.9525,
+          334837.6683,
+          18532.82128799,
+          680.87462925,
+          351.703075,
+          18532.82128799,
+          1144.17968051
+        ]
+      },
+      {
+        "type": "double",
+        "attributes": {
+          "dim": {
+            "type": "integer",
+            "attributes": {},
+            "value": [
+              4,
+              1
+            ]
+          },
+          "dimnames": {
+            "type": "list",
+            "attributes": {},
+            "value": [
+              {
+                "type": "character",
+                "attributes": {},
+                "value": [
+                  "(Intercept)",
+                  "GENDER1",
+                  "PM_BMI_CONTINUOUS",
+                  "LAB_HDL"
+                ]
+              },
+              {
+                "type": "NULL"
+              }
+            ]
+          }
+        },
+        "value": [
+          -842,
+          -424,
+          -22985.76,
+          -1327.9215585
+        ]
+      },
+      {
+        "type": "integer",
+        "attributes": {},
+        "value": [
+          1732
+        ]
+      },
+      {
+        "type": "double",
+        "attributes": {},
+        "value": [
+          2401.06183346
+        ]
+      },
+      {
+        "type": "integer",
+        "attributes": {},
+        "value": [
+          1732
+        ]
+      },
+      {
+        "type": "integer",
+        "attributes": {},
+        "value": [
+          431
+        ]
+      },
+      {
+        "type": "integer",
+        "attributes": {},
+        "value": [
+          2163
+        ]
+      },
+      {
+        "type": "double",
+        "attributes": {},
+        "value": [
+          0
+        ]
+      },
+      {
+        "type": "character",
+        "attributes": {},
+        "value": [
+          "No errors"
+        ]
+      }
+    ]
+  }
+}
