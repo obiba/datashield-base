@@ -29,7 +29,9 @@ class PlotsClient:
         """
         self.dssession = dssession
 
-    def get_histogram(self, symbol: str, num_breaks: int = 20, k: int = 3, noise: float = 0.25) -> str:
+    def get_histogram(
+        self, symbol: str, num_breaks: int = 20, k: int = 3, noise: float = 0.25, output_folder: Path = None
+    ) -> dict:
         """
         Get the histogram of a symbol in the remote R sessions for a given DataSHIELD session.
 
@@ -38,8 +40,9 @@ class PlotsClient:
             num_breaks: The number of breaks to use for the histogram (default is 20)
             k: The number of the nearest neighbours for which their centroid is calculated (default is 3)
             noise: The noise parameter for the histogram (default is 0.25)
+            output_folder: Optional custom output folder to save the histogram file. If not provided, defaults to .datashield/work/<session_id>
         Returns:
-            A base64-encoded string representing the histogram image for the specified symbol in the remote R sessions
+            A dictionary containing the path to the saved histogram file and the base64-encoded image data
         """
         # Find min,max values across servers to use for consistent breaks
         ranges = self.dssession.aggregate(f"histogramDS1({symbol}, method.indicator=1, k={k}, noise={noise})")
@@ -87,7 +90,9 @@ class PlotsClient:
         ax.legend()
 
         # Save to file in .datashield/work/<session_id>
-        work_dir = Path.cwd() / ".datashield" / "work" / self.dssession.id
+        work_dir = (
+            output_folder if output_folder is not None else Path.cwd() / ".datashield" / "work" / self.dssession.id
+        )
         work_dir.mkdir(parents=True, exist_ok=True)
         # Generate filename from symbol (replace special chars)
         safe_symbol = symbol.replace("$", "_").replace("/", "_").replace("\\", "_")
@@ -101,4 +106,4 @@ class PlotsClient:
         plt.close(fig)  # important — avoid memory leaks
         buf.seek(0)
         image_b64 = base64.b64encode(buf.read()).decode("utf-8")
-        return image_b64
+        return {"output_path": str(output_path), "image_b64": image_b64}

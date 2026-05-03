@@ -33,8 +33,10 @@ class TestPlotsClientUnit:
         with patch("datashield_base.plots.Path.cwd", return_value=tmp_path):
             result = self.client.get_histogram("df$LAB_HDL")
 
-        assert isinstance(result, str)
-        decoded = base64.b64decode(result)
+        assert isinstance(result, dict)
+        assert "image_b64" in result
+        assert "output_path" in result
+        decoded = base64.b64decode(result["image_b64"])
         assert decoded[:8] == b"\x89PNG\r\n\x1a\n"
 
     def test_get_histogram_saves_file_to_work_dir(self, tmp_path):
@@ -43,10 +45,23 @@ class TestPlotsClientUnit:
             {"server1": _HIST_DS2_SERVER1},
         ]
         with patch("datashield_base.plots.Path.cwd", return_value=tmp_path):
-            self.client.get_histogram("df$LAB_HDL")
+            result = self.client.get_histogram("df$LAB_HDL")
 
         expected = tmp_path / ".datashield" / "work" / "test-session-id" / "histogram_df_LAB_HDL.png"
         assert expected.exists()
+        assert result["output_path"] == str(expected)
+
+    def test_get_histogram_uses_custom_output_folder(self, tmp_path):
+        self.mock_session.aggregate.side_effect = [
+            {"server1": [0.0, 4.0]},
+            {"server1": _HIST_DS2_SERVER1},
+        ]
+        custom_dir = tmp_path / "custom_output"
+        result = self.client.get_histogram("df$LAB_HDL", output_folder=custom_dir)
+
+        expected = custom_dir / "histogram_df_LAB_HDL.png"
+        assert expected.exists()
+        assert result["output_path"] == str(expected)
 
     def test_get_histogram_calls_histogramds1_with_correct_args(self, tmp_path):
         self.mock_session.aggregate.side_effect = [
@@ -109,7 +124,7 @@ class TestPlotsClientUnit:
         with patch("datashield_base.plots.Path.cwd", return_value=tmp_path):
             result = self.client.get_histogram("df$LAB_HDL")
 
-        decoded = base64.b64decode(result)
+        decoded = base64.b64decode(result["image_b64"])
         assert decoded[:8] == b"\x89PNG\r\n\x1a\n"
 
     def test_get_histogram_sanitizes_symbol_in_filename(self, tmp_path):
@@ -144,8 +159,10 @@ class TestPlotsClientIntegration:
         try:
             client = PlotsClient(self.dssession)
             result = client.get_histogram("df$LAB_HDL")
-            assert isinstance(result, str)
-            decoded = base64.b64decode(result)
+            assert isinstance(result, dict)
+            assert "image_b64" in result
+            assert "output_path" in result
+            decoded = base64.b64decode(result["image_b64"])
             assert decoded[:8] == b"\x89PNG\r\n\x1a\n"
         except DSError as e:
             pytest.fail(f"get_histogram raised an exception: {e} {self.dssession.get_errors()}")
